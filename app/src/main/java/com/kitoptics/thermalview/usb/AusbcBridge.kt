@@ -14,13 +14,16 @@ import com.serenegiant.usb.USBMonitor
 private const val TAG = "AusbcBridge"
 
 /**
- * Wraps AUSBC 3.2.7 to open the KitEye UVC camera and stream frames.
+ * Wraps AUSBC 3.2.7 MultiCameraClient.Camera to open the KitEye UVC camera.
  *
- * Design: avoids MultiCameraClient.register() which calls registerReceiver() without
- * the RECEIVER_EXPORTED flag required on Android 13+ (API 33+). Instead we call
- * USBMonitor.openDevice() directly after USB permission is already granted.
+ * - Uses USBMonitor.openDevice() directly (no register()) → avoids
+ *   registerReceiver() SecurityException on Android 13+ (API 33+).
+ * - AUSBC delivers NV21 via IPreviewDataCallBack; we pass bytes as-is.
+ *   ThermalGLRenderer uploads the NV21 Y-plane (first 307,200 bytes) as
+ *   GL_LUMINANCE 640×480 for the thermal palette shader.
  *
- * Frame data is delivered in NV21 format by AUSBC.
+ * Grey8: camera only advertises type:4 (YUYV) — no Grey8 in USB descriptors.
+ * Bandwidth reduction requires different camera firmware.
  */
 class AusbcBridge(
     private val context: Context,
@@ -36,23 +39,15 @@ class AusbcBridge(
     fun open(device: UsbDevice) {
         Log.i(TAG, "Opening UVC VID=0x${device.vendorId.toString(16)} PID=0x${device.productId.toString(16)}")
 
-        // Create USBMonitor with a no-op listener — we do NOT call register() to avoid
-        // the Android 13+ SecurityException (registerReceiver without RECEIVER_EXPORTED flag).
-        // Permission is already granted by MainActivity before calling open().
         val monitor = USBMonitor(context, object : USBMonitor.OnDeviceConnectListener {
             override fun onAttach(device: UsbDevice?) {}
             override fun onDetach(device: UsbDevice?) {}
-            override fun onConnect(
-                device: UsbDevice?,
-                ctrlBlock: USBMonitor.UsbControlBlock?,
-                createNew: Boolean
-            ) {}
+            override fun onConnect(device: UsbDevice?, ctrlBlock: USBMonitor.UsbControlBlock?, createNew: Boolean) {}
             override fun onDisconnect(device: UsbDevice?, ctrlBlock: USBMonitor.UsbControlBlock?) {}
             override fun onCancel(device: UsbDevice?) {}
         })
         usbMonitor = monitor
 
-        // openDevice() opens the USB connection directly — no BroadcastReceiver needed.
         val ctrlBlock = try {
             monitor.openDevice(device)
         } catch (e: SecurityException) {
@@ -97,6 +92,7 @@ class AusbcBridge(
                                 onFrame(data)
                                 if (firstFrame) {
                                     firstFrame = false
+                                    Log.i(TAG, "First frame: ${data.size} bytes format=$format")
                                     onOpened()
                                 }
                             }
@@ -110,7 +106,6 @@ class AusbcBridge(
                 }
             }
         })
-        // Build CameraRequest via DefaultConstructorMarker (AUSBC 3.2.7 has private constructor)
         val request = CameraRequest::class.java
             .getDeclaredConstructor(kotlin.jvm.internal.DefaultConstructorMarker::class.java)
             .also { it.isAccessible = true }
@@ -120,8 +115,6 @@ class AusbcBridge(
                 it.previewWidth = CAMERA_WIDTH
                 it.previewHeight = CAMERA_HEIGHT
             }
-        // AUSBC requires a Surface/SurfaceView — pass a dummy offscreen SurfaceTexture.
-        // We don't use AUSBC's rendering path; raw NV21 frames arrive via IPreviewDataCallBack.
         val st = SurfaceTexture(0).also { dummySurfaceTexture = it }
         val surface = Surface(st).also { dummySurface = it }
         cam.openCamera(surface, request)

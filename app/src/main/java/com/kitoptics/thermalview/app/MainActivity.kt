@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
 
         // Pre-allocate frame pipeline
-        tripleBuffer = TripleBuffer(CAMERA_WIDTH * CAMERA_HEIGHT * 2)
+        tripleBuffer = TripleBuffer(CAMERA_WIDTH * CAMERA_HEIGHT)
         distributor = FrameDistributor(tripleBuffer)
         streamController = UvcStreamController(distributor)
 
