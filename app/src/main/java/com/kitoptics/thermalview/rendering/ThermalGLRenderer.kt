@@ -25,7 +25,10 @@ private val QUAD_COORDS = floatArrayOf(
 
 /**
  * OpenGL ES 3.2 renderer for thermal camera preview.
- * Uploads YUYV frames as RGBA8 texture → GLSL shader converts to RGB.
+ * Uploads NV21 Y-plane as GL_LUMINANCE texture (640x480) → GLSL shader applies palette.
+ *
+ * AUSBC 3.2.7 converts YUYV→NV21 before IPreviewDataCallBack. We use Y-plane only:
+ * sufficient for White-hot / Black-hot thermal palette (color comes from intensity).
  *
  * GL thread only — never call from USB or UI thread.
  * Zero allocations in onDrawFrame().
@@ -76,12 +79,12 @@ class ThermalGLRenderer(
 
         val frame = distributor.getLatestFrame() ?: return
 
-        // Upload YUYV data as RGBA8 texture (each RGBA texel = 2 YUYV pixels)
+        // Upload NV21 Y-plane as GL_LUMINANCE (640x480 = first 307200 bytes)
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureId)
         GLES30.glTexSubImage2D(
             GLES30.GL_TEXTURE_2D, 0, 0, 0,
-            CAMERA_WIDTH / 2, CAMERA_HEIGHT,
-            GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE,
+            CAMERA_WIDTH, CAMERA_HEIGHT,
+            GLES30.GL_LUMINANCE, GLES30.GL_UNSIGNED_BYTE,
             frame
         )
 
@@ -113,11 +116,11 @@ class ThermalGLRenderer(
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR)
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE)
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE)
-        // Allocate texture storage: CAMERA_WIDTH/2 texels wide (each texel = 2 YUYV pixels)
+        // Allocate texture storage: 640x480 GL_LUMINANCE (NV21 Y-plane)
         GLES30.glTexImage2D(
-            GLES30.GL_TEXTURE_2D, 0, GLES30.GL_RGBA,
-            CAMERA_WIDTH / 2, CAMERA_HEIGHT, 0,
-            GLES30.GL_RGBA, GLES30.GL_UNSIGNED_BYTE, null
+            GLES30.GL_TEXTURE_2D, 0, GLES30.GL_LUMINANCE,
+            CAMERA_WIDTH, CAMERA_HEIGHT, 0,
+            GLES30.GL_LUMINANCE, GLES30.GL_UNSIGNED_BYTE, null
         )
     }
 
