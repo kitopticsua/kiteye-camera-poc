@@ -1,0 +1,37 @@
+# Android
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# APK
+*.apk
+*.aab
+*.ap_
+
+# Keystore
+*.keystore
+*.jks
+keystore.properties
+
+# Logs
+logs/
+*.log
+
+# Test results
+benchmark-results/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# IDE
+.vscode/
+*.swp
+*.swo
