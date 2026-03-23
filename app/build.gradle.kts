@@ -47,6 +47,12 @@ android {
         viewBinding = true
         buildConfig = true
     }
+
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true  // android.util.Log returns 0 instead of throwing
+        }
+    }
 }
 
 dependencies {
