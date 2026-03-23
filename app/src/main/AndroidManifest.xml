@@ -7,6 +7,8 @@
         android:name="android.hardware.usb.host"
         android:required="true" />
 
+    <!-- Required by Samsung UsbUserPermissionManager for UVC devices -->
+    <uses-permission android:name="android.permission.CAMERA" />
     <!-- Storage for video recording -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- Required by AUSBC internal notifications on API 33+ -->

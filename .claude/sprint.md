@@ -13,10 +13,10 @@ Phase 1: USB camera connection + basic live preview on Samsung Galaxy XCover7
 | ID | Title | Type | Status | Agent | Priority |
 |---|---|---|---|---|---|
 | CAM-1 | USB State Machine + Device Manager | android | ✅ DONE | /android | P0 |
-| CAM-2 | Frame Pipeline (Triple Buffer) | android | 🔲 TODO | /android | P0 |
-| CAM-3 | AUSBC Stream Integration | android | 🔲 TODO | /android | P0 |
-| CAM-4 | OpenGL Preview (YUYV→RGB Shader) | android | 🔲 TODO | /android | P1 |
-| CAM-5 | CameraViewModel + Full UI Integration | android | 🔲 TODO | /android | P1 |
+| CAM-2 | Frame Pipeline (Triple Buffer) | android | ✅ DONE | /android | P0 |
+| CAM-3 | AUSBC Stream Integration | android | ✅ DONE | /android | P0 |
+| CAM-4 | OpenGL Preview (YUYV→RGB Shader) | android | ✅ DONE | /android | P1 |
+| CAM-5 | CameraViewModel + Full UI Integration | android | ✅ DONE | /android | P1 |
 
 ### Last Story ID Used: CAM-5
 

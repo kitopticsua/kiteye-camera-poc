@@ -77,9 +77,6 @@ dependencies {
         exclude(group = "com.github.bumptech.glide") // Glide — not needed
     }
 
-    // Sentry crash reporting
-    implementation("io.sentry:sentry-android:7.10.0")
-
     // Unit tests
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
