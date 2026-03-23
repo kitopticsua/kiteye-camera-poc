@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
     private val fpsHandler = Handler(Looper.getMainLooper())
     private val fpsRunnable = object : Runnable {
         override fun run() {
-            // FPS is updated through viewModel.onFpsUpdate — called by AusbcBridge
+            viewModel.onFpsUpdate(streamController.getFps())
             fpsHandler.postDelayed(this, 500)
         }
     }
