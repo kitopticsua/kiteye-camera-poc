@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.kitoptics.thermalview"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.kitoptics.thermalview"
         minSdk = 33
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "0.1.0-dev"
 
@@ -76,6 +76,8 @@ dependencies {
         exclude(group = "com.zlc.glide")          // WebP decoder — not needed
         exclude(group = "com.github.bumptech.glide") // Glide — not needed
     }
+    // libuvc is runtime-only in AUSBC POM but we need USBMonitor on the compile classpath
+    compileOnly("com.github.jiangdongguo.AndroidUSBCamera:libuvc:3.2.7")
 
     // Unit tests
     testImplementation("junit:junit:4.13.2")

@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity() {
         if (device.vendorId != KITEYE_VID || device.productId != KITEYE_PID) return
         val hasPerm = usbManager?.hasPermission(device) == true
         android.util.Log.d("KitEye", "requestPermission: VID=${device.vendorId} PID=${device.productId} hasPerm=$hasPerm")
+        pendingDevice = device
         viewModel.onDeviceDetected()
         if (hasPerm) {
             viewModel.onPermissionGranted()
