@@ -9,6 +9,8 @@
 
     <!-- Storage for video recording -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Required by AUSBC internal notifications on API 33+ -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".app.ThermalViewApp"

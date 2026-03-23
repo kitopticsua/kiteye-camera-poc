@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.kitoptics.thermalview.usb.UvcDeviceManagerTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-03-23T18:20:53" hostname="LAPTOP-2BCD7VLB" time="0.081">
+  <properties/>
+  <testcase name="device detached from Connecting state transitions to Disconnected" classname="com.kitoptics.thermalview.usb.UvcDeviceManagerTest" time="0.075"/>
+  <testcase name="device attached with correct VID PID transitions to RequestingPermission" classname="com.kitoptics.thermalview.usb.UvcDeviceManagerTest" time="0.001"/>
+  <testcase name="permission denied transitions to Error" classname="com.kitoptics.thermalview.usb.UvcDeviceManagerTest" time="0.001"/>
+  <testcase name="initial state is Disconnected" classname="com.kitoptics.thermalview.usb.UvcDeviceManagerTest" time="0.001"/>
+  <testcase name="permission granted transitions to Connecting" classname="com.kitoptics.thermalview.usb.UvcDeviceManagerTest" time="0.0"/>
+  <testcase name="device attached with wrong VID PID stays Disconnected" classname="com.kitoptics.thermalview.usb.UvcDeviceManagerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

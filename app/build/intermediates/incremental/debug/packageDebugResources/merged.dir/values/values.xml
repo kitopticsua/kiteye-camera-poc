@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fab_primary">#1E88E5</color>
+    <color name="fab_surface">#2D2D2D</color>
+    <color name="recording_red">#FF5252</color>
+    <color name="stats_bg">#CC000000</color>
+    <color name="surface_dark">#121212</color>
+    <color name="text_secondary">#B3FFFFFF</color>
+    <color name="thermal_orange">#FF6D00</color>
+    <string name="app_name">ThermalView</string>
+    <style name="Theme.ThermalView" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#FF6D00</item>
+        <item name="colorOnPrimary">#1A0A00</item>
+        <item name="colorSurface">#121212</item>
+        <item name="colorError">#CF6679</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:navigationBarColor">#000000</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>

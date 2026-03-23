@@ -64,8 +64,12 @@ dependencies {
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
-    // UVC Camera — AUSBC (AndroidUSBCamera)
-    implementation("com.github.jiangdongguo.AndroidUSBCamera:libausbc:3.3.0")
+    // UVC Camera — AUSBC (AndroidUSBCamera) — 3.2.7 is latest stable on JitPack
+    implementation("com.github.jiangdongguo.AndroidUSBCamera:libausbc:3.2.7") {
+        exclude(group = "com.gyf.immersionbar")   // UI status bar — not needed
+        exclude(group = "com.zlc.glide")          // WebP decoder — not needed
+        exclude(group = "com.github.bumptech.glide") // Glide — not needed
+    }
 
     // Sentry crash reporting
     implementation("io.sentry:sentry-android:7.10.0")

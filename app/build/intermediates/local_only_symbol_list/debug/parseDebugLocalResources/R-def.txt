@@ -1,0 +1,21 @@
+R_DEF: Internal format may change without notice
+local
+color fab_primary
+color fab_surface
+color recording_red
+color stats_bg
+color surface_dark
+color text_secondary
+color thermal_orange
+id action_bar
+id fab_palette
+id fab_record
+id fab_settings
+id preview_container
+id stats_bar
+id tv_status
+layout activity_main
+mipmap ic_launcher
+string app_name
+style Theme.ThermalView
+xml usb_device_filter
