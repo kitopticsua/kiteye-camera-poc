@@ -65,7 +65,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
 
     // UVC Camera — AUSBC (AndroidUSBCamera)
-    implementation("com.github.jiangdongguo:AndroidUSBCamera:3.3.3")
+    implementation("com.github.jiangdongguo.AndroidUSBCamera:libausbc:3.3.0")
 
     // Sentry crash reporting
     implementation("io.sentry:sentry-android:7.10.0")
