@@ -34,10 +34,12 @@ https://github.com/kitopticsua/kiteye-camera-poc
 | Component | Spec |
 |---|---|
 | Target Device | Samsung Galaxy XCover7 (Dimensity 6100+, Mali-G57 MC2, Android 13+, USB-C) |
-| Camera | Custom USB 2.0 UVC thermal camera (tепловiзор) |
+| Camera | Custom USB 2.0 UVC thermal camera (тепловiзор) |
+| Camera USB ID | VID=`0x04b4` PID=`0x00c2` (confirmed from KitEye28 app) |
+| UVC Format | `UVC_VS_FORMAT_UNCOMPRESSED` (YUYV) |
 | Resolution | 640x480 |
-| Formats | YUV422 (primary), Grey8 / Y8 (Phase 2) |
-| Target FPS | 50-55 fps |
+| Formats | YUV422 / YUYV (primary), Grey8 / Y8 (Phase 2) |
+| Target FPS | 60 fps (camera supports 60fps per KitEye28 app) |
 | Connection | USB-C direct or via powered USB HUB |
 
 ## Key Technical Decisions
