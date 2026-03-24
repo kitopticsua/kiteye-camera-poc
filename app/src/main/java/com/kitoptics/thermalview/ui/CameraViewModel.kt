@@ -1,6 +1,7 @@
 package com.kitoptics.thermalview.ui
 
 import androidx.lifecycle.ViewModel
+import com.kitoptics.thermalview.usb.CameraFormat
 import com.kitoptics.thermalview.usb.UsbCameraState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,15 +37,15 @@ class CameraViewModel : ViewModel() {
     }
 
     // Called when AUSBC successfully opens camera and first frame arrives
-    fun onStreamingStarted(fps: Float = 0f) {
-        _cameraState.value = UsbCameraState.Streaming(fps)
+    fun onStreamingStarted(fps: Float = 0f, format: CameraFormat = CameraFormat.YUYV) {
+        _cameraState.value = UsbCameraState.Streaming(fps, format)
     }
 
     // Called periodically to update FPS overlay
     fun onFpsUpdate(fps: Float) {
         val current = _cameraState.value
         if (current is UsbCameraState.Streaming) {
-            _cameraState.value = UsbCameraState.Streaming(fps)
+            _cameraState.value = UsbCameraState.Streaming(fps, current.format)
         }
     }
 

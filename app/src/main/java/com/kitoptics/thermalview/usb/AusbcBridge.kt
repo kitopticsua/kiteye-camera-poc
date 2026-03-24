@@ -22,13 +22,14 @@ private const val TAG = "AusbcBridge"
  *   ThermalGLRenderer uploads the NV21 Y-plane (first 307,200 bytes) as
  *   GL_LUMINANCE 640×480 for the thermal palette shader.
  *
- * Grey8: camera only advertises type:4 (YUYV) — no Grey8 in USB descriptors.
- * Bandwidth reduction requires different camera firmware.
+ * Format negotiation: after camera opens, [detectFormat] queries supported
+ * formats via reflection. Grey8 is preferred; if unavailable the app falls
+ * back to YUYV automatically (see [onOpened] callback).
  */
 class AusbcBridge(
     private val context: Context,
     private val onFrame: (ByteArray) -> Unit,
-    private val onOpened: () -> Unit,
+    private val onOpened: (CameraFormat) -> Unit,
     private val onError: (String) -> Unit,
 ) {
     private var usbMonitor: USBMonitor? = null
@@ -81,19 +82,20 @@ class AusbcBridge(
             ) {
                 when (code) {
                     ICameraStateCallBack.State.OPENED -> {
-                        Log.i(TAG, "Camera OPENED — adding preview callback")
+                        val activeFormat = detectFormat(self)
+                        Log.i(TAG, "Camera OPENED — format=$activeFormat, adding preview callback")
                         self.addPreviewDataCallBack(object : IPreviewDataCallBack {
                             private var firstFrame = true
                             override fun onPreviewData(
                                 data: ByteArray?,
-                                format: IPreviewDataCallBack.DataFormat
+                                dataFormat: IPreviewDataCallBack.DataFormat
                             ) {
                                 if (data == null) return
                                 onFrame(data)
                                 if (firstFrame) {
                                     firstFrame = false
-                                    Log.i(TAG, "First frame: ${data.size} bytes format=$format")
-                                    onOpened()
+                                    Log.i(TAG, "First frame: ${data.size} bytes dataFormat=$dataFormat")
+                                    onOpened(activeFormat)
                                 }
                             }
                         })
@@ -119,6 +121,44 @@ class AusbcBridge(
         val surface = Surface(st).also { dummySurface = it }
         cam.openCamera(surface, request)
         camera = cam
+    }
+
+    /**
+     * Detects the best available format by querying the underlying UVCCamera.
+     *
+     * Prefers [CameraFormat.GREY8] (half USB bandwidth). Falls back to [CameraFormat.YUYV]
+     * if Grey8 is not advertised in the camera's USB descriptors, or if the query fails.
+     *
+     * Uses reflection to access [com.serenegiant.usb.UVCCamera] which is held privately
+     * inside [MultiCameraClient.Camera].
+     */
+    private fun detectFormat(camera: MultiCameraClient.Camera): CameraFormat {
+        return try {
+            val uvcField = camera.javaClass.getDeclaredField("mUvcCamera")
+                .also { it.isAccessible = true }
+            val uvcCamera = uvcField.get(camera)
+                ?: return CameraFormat.YUYV.also {
+                    Log.w(TAG, "detectFormat: mUvcCamera is null, using YUYV")
+                }
+
+            val getSupportedSizeList = uvcCamera.javaClass.getMethod(
+                "getSupportedSizeList", Int::class.java
+            )
+            val grey8Sizes = getSupportedSizeList.invoke(
+                uvcCamera, CameraFormat.GREY8.formatId
+            ) as? List<*>
+
+            if (!grey8Sizes.isNullOrEmpty()) {
+                Log.i(TAG, "Grey8 available (${grey8Sizes.size} sizes) — using Grey8")
+                CameraFormat.GREY8
+            } else {
+                Log.i(TAG, "Grey8 not available — falling back to YUYV")
+                CameraFormat.YUYV
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "detectFormat failed (${e.message}) — using YUYV")
+            CameraFormat.YUYV
+        }
     }
 
     fun close() {

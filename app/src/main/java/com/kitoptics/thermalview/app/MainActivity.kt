@@ -16,6 +16,9 @@ import android.os.Looper
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -68,9 +71,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun hideSystemBars() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            hide(WindowInsetsCompat.Type.systemBars())
+            systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) hideSystemBars()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        hideSystemBars()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -161,7 +179,7 @@ class MainActivity : AppCompatActivity() {
         ausbcBridge = AusbcBridge(
             context = this,
             onFrame = { data -> streamController.onFrameReceived(data) },
-            onOpened = { viewModel.onStreamingStarted(streamController.getFps()) },
+            onOpened = { format -> viewModel.onStreamingStarted(streamController.getFps(), format) },
             onError = { msg -> viewModel.onError(msg) }
         )
         ausbcBridge?.open(device)
@@ -219,7 +237,7 @@ class MainActivity : AppCompatActivity() {
             }
             is UsbCameraState.Streaming -> {
                 binding.tvStatus.visibility = View.GONE
-                binding.statsBar.text = "FPS: ${"%.1f".format(state.fps)}  USB: connected  YUV422"
+                binding.statsBar.text = "FPS: ${"%.1f".format(state.fps)}  USB: connected  ${state.format.label}"
                 binding.fabRecord.isEnabled = true
                 binding.fabPalette.isEnabled = true
                 fpsHandler.post(fpsRunnable)

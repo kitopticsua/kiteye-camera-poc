@@ -6,7 +6,7 @@ sealed class UsbCameraState {
     object Disconnected : UsbCameraState()
     object RequestingPermission : UsbCameraState()
     object Connecting : UsbCameraState()
-    data class Streaming(val fps: Float) : UsbCameraState()
+    data class Streaming(val fps: Float, val format: CameraFormat = CameraFormat.YUYV) : UsbCameraState()
     data class Recording(val fps: Float, val duration: Duration) : UsbCameraState()
     data class Error(val message: String) : UsbCameraState()
 }
