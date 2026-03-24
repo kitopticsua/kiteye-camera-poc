@@ -66,7 +66,11 @@ class MainActivity : AppCompatActivity() {
     private val fpsHandler = Handler(Looper.getMainLooper())
     private val fpsRunnable = object : Runnable {
         override fun run() {
-            viewModel.onFpsUpdate(streamController.getFps())
+            viewModel.onFpsUpdate(
+                fps = streamController.getFps(),
+                bandwidthMbps = streamController.getBandwidthMbps(),
+                avgIntervalMs = streamController.getAvgIntervalMs(),
+            )
             fpsHandler.postDelayed(this, 500)
         }
     }
@@ -111,6 +115,15 @@ class MainActivity : AppCompatActivity() {
 
         // Handle auto-launch from USB_DEVICE_ATTACHED intent
         handleIntent(intent)
+
+        // POST_NOTIFICATIONS: request on API 33+ so AUSBC internal notifications don't throw
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) {}.launch(
+                Manifest.permission.POST_NOTIFICATIONS
+            )
+        }
 
         // Ensure CAMERA permission (required by Samsung for UVC devices)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -245,7 +258,10 @@ class MainActivity : AppCompatActivity() {
             }
             is UsbCameraState.Streaming -> {
                 binding.tvStatus.visibility = View.GONE
-                binding.statsBar.text = "FPS: ${"%.1f".format(state.fps)}  USB: connected  ${state.format.label}"
+                binding.statsBar.text = "FPS:${"%.1f".format(state.fps)}" +
+                    "  BW:${"%.1f".format(state.bandwidthMbps)}MB/s" +
+                    "  Lat:${state.avgIntervalMs.toInt()}ms" +
+                    "  ${state.format.label}"
                 binding.fabRecord.isEnabled = true
                 binding.fabPalette.isEnabled = true
                 binding.fabCalibrate.isEnabled = true   // reset one-shot on each new connection

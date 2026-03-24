@@ -25,7 +25,7 @@ private val QUAD_COORDS = floatArrayOf(
 
 /**
  * OpenGL ES 3.2 renderer for thermal camera preview.
- * Uploads NV21 Y-plane as GL_LUMINANCE texture (640x480) → GLSL shader applies palette.
+ * Uploads NV21 Y-plane as GL_R8 texture (640x480) → GLSL shader applies palette.
  *
  * AUSBC 3.2.7 converts YUYV→NV21 before IPreviewDataCallBack. We use Y-plane only:
  * sufficient for White-hot / Black-hot thermal palette (color comes from intensity).
@@ -79,12 +79,14 @@ class ThermalGLRenderer(
 
         val frame = distributor.getLatestFrame() ?: return
 
-        // Upload NV21 Y-plane as GL_LUMINANCE (640x480 = first 307200 bytes)
+        // Upload NV21 Y-plane as GL_R8 (640x480 = first 307200 bytes).
+        // GL_R8 / GL_RED replaces deprecated GL_LUMINANCE — compatible with strict GLES 3.x drivers.
+        // Shader samples .r channel which works identically for both formats.
         GLES30.glBindTexture(GLES30.GL_TEXTURE_2D, textureId)
         GLES30.glTexSubImage2D(
             GLES30.GL_TEXTURE_2D, 0, 0, 0,
             CAMERA_WIDTH, CAMERA_HEIGHT,
-            GLES30.GL_LUMINANCE, GLES30.GL_UNSIGNED_BYTE,
+            GLES30.GL_RED, GLES30.GL_UNSIGNED_BYTE,
             frame
         )
 
@@ -116,11 +118,12 @@ class ThermalGLRenderer(
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_MAG_FILTER, GLES30.GL_LINEAR)
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_S, GLES30.GL_CLAMP_TO_EDGE)
         GLES30.glTexParameteri(GLES30.GL_TEXTURE_2D, GLES30.GL_TEXTURE_WRAP_T, GLES30.GL_CLAMP_TO_EDGE)
-        // Allocate texture storage: 640x480 GL_LUMINANCE (NV21 Y-plane)
+        // Allocate texture storage: 640x480 single-channel GL_R8.
+        // GL_R8 (sized internal format) + GL_RED (base format) is the GLES 3.0+ standard.
         GLES30.glTexImage2D(
-            GLES30.GL_TEXTURE_2D, 0, GLES30.GL_LUMINANCE,
+            GLES30.GL_TEXTURE_2D, 0, GLES30.GL_R8,
             CAMERA_WIDTH, CAMERA_HEIGHT, 0,
-            GLES30.GL_LUMINANCE, GLES30.GL_UNSIGNED_BYTE, null
+            GLES30.GL_RED, GLES30.GL_UNSIGNED_BYTE, null
         )
     }
 

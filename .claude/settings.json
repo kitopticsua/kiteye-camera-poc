@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \":*)",
+      "Bash(javap -p C:/tmp/ausbc/com/jiangdg/ausbc/MultiCameraClient$Camera.class)",
+      "Bash(JAVA_HOME=\"C:/Program Files/Android/Android Studio/jbr\" \"$JAVA_HOME/bin/javap\" -p \"C:/tmp/ausbc/com/jiangdg/ausbc/MultiCameraClient$Camera.class\")",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap.exe\" -p \"C:/tmp/ausbc/com/jiangdg/ausbc/MultiCameraClient$Camera.class\")",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap.exe\" -p \"C:/tmp/ausbc/com/jiangdg/ausbc/camera/bean/CameraRequest.class\")",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap.exe\" -p -c \"C:/tmp/libuvc/extracted/com/serenegiant/usb/UVCCamera.class\")",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap.exe\" -c \"C:/tmp/libuvc/extracted/com/serenegiant/usb/UVCCamera.class\")",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap.exe\" -c \"C:/tmp/ausbc/com/jiangdg/ausbc/MultiCameraClient$Camera.class\")",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/javap.exe\" -verbose \"C:/tmp/libuvc/extracted/com/serenegiant/usb/UVCCamera.class\")",
+      "Bash(./gradlew testDebugUnitTest)",
+      "Bash(./gradlew testDebugUnitTest --stacktrace)",
+      "Bash(export JAVA_HOME=\"C:/Program Files/Android/Android Studio/jbr\")",
+      "Bash(./gradlew assembleDebug)",
+      "Bash(adb install:*)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" install:*)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" logcat:*)",
+      "Bash(./gradlew testDebugUnitTest assembleDebug)"
+    ]
+  }
+}

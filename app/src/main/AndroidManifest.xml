@@ -7,6 +7,11 @@
         android:name="android.hardware.usb.host"
         android:required="true" />
 
+    <!-- Require OpenGL ES 3.2 — prevents install on GLES 2.0/3.0 devices -->
+    <uses-feature
+        android:glEsVersion="0x00030002"
+        android:required="true" />
+
     <!-- Required by Samsung UsbUserPermissionManager for UVC devices -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- Storage for video recording -->

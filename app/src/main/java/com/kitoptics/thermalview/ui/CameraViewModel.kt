@@ -42,10 +42,10 @@ class CameraViewModel : ViewModel() {
     }
 
     // Called periodically to update FPS overlay
-    fun onFpsUpdate(fps: Float) {
+    fun onFpsUpdate(fps: Float, bandwidthMbps: Float = 0f, avgIntervalMs: Float = 0f) {
         val current = _cameraState.value
         if (current is UsbCameraState.Streaming) {
-            _cameraState.value = UsbCameraState.Streaming(fps, current.format)
+            _cameraState.value = UsbCameraState.Streaming(fps, current.format, bandwidthMbps, avgIntervalMs)
         }
     }
 

@@ -23,6 +23,7 @@ class UvcStreamController(
 
     private var frameCallback: ((ByteArray) -> Unit)? = null
     private var streaming = false
+    @Volatile private var lastFrameSize: Int = 0
 
     /**
      * Called by AusbcBridge on USB read thread when a frame arrives.
@@ -30,6 +31,7 @@ class UvcStreamController(
      */
     fun onFrameReceived(data: ByteArray) {
         if (!streaming) return
+        lastFrameSize = data.size
         frameCallback?.invoke(data)
         distributor.onFrame(data)
         fpsCounter.onFrame(System.nanoTime())
@@ -48,6 +50,17 @@ class UvcStreamController(
     }
 
     fun getFps(): Float = fpsCounter.getFps()
+
+    /** USB bandwidth in MB/s — uses YUYV wire size (2 bytes/pixel), not NV21 callback size. */
+    fun getBandwidthMbps(): Float {
+        val fps = fpsCounter.getFps()
+        if (fps <= 0f) return 0f
+        val wireBytesPerFrame = CAMERA_WIDTH * CAMERA_HEIGHT * 2  // YUYV on USB wire
+        return wireBytesPerFrame * fps / 1_000_000f
+    }
+
+    /** Average measured inter-frame interval in milliseconds. */
+    fun getAvgIntervalMs(): Float = fpsCounter.getAvgIntervalMs()
 
     fun isStreaming(): Boolean = streaming
 
