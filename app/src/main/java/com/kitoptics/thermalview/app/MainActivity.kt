@@ -116,9 +116,8 @@ class MainActivity : AppCompatActivity() {
         // Handle auto-launch from USB_DEVICE_ATTACHED intent
         handleIntent(intent)
 
-        // POST_NOTIFICATIONS: request on API 33+ so AUSBC internal notifications don't throw
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+        // POST_NOTIFICATIONS: required on API 33+ (minSdk=35, always needed)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
             registerForActivityResult(ActivityResultContracts.RequestPermission()) {}.launch(
                 Manifest.permission.POST_NOTIFICATIONS
@@ -150,12 +149,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleIntent(intent: Intent) {
         if (intent.action == UsbManager.ACTION_USB_DEVICE_ATTACHED) {
-            val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableExtra(UsbManager.EXTRA_DEVICE, UsbDevice::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-            }
+            val device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE, UsbDevice::class.java)
             device?.let { requestPermission(it) }
         }
     }
@@ -169,8 +163,7 @@ class MainActivity : AppCompatActivity() {
         if (hasPerm) {
             viewModel.onPermissionGranted()
         } else {
-            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
-                PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT else 0
+            val flags = PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
             val permIntent = PendingIntent.getBroadcast(
                 this, device.productId,   // unique request code per device
                 Intent(ACTION_USB_PERMISSION).setPackage(packageName),
@@ -287,12 +280,9 @@ class MainActivity : AppCompatActivity() {
     private fun registerUsbReceiver() {
         usbReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                val device = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    intent.getParcelableExtra(UsbManager.EXTRA_DEVICE, UsbDevice::class.java)
-                } else {
-                    @Suppress("DEPRECATION")
-                    intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
-                } ?: return
+                val device = intent.getParcelableExtra(
+                    UsbManager.EXTRA_DEVICE, UsbDevice::class.java
+                ) ?: return
 
                 when (intent.action) {
                     UsbManager.ACTION_USB_DEVICE_ATTACHED -> requestPermission(device)

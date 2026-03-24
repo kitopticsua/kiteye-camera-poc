@@ -18,7 +18,29 @@
       "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" install:*)",
       "Bash(echo \"Exit: $?\")",
       "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" logcat:*)",
-      "Bash(./gradlew testDebugUnitTest assembleDebug)"
+      "Bash(./gradlew testDebugUnitTest assembleDebug)",
+      "Bash(./gradlew assembleRelease)",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/java.exe\" -jar \"C:/Users/Admin/AppData/Local/Android/Sdk/build-tools/36.0.0/lib/apksigner.jar\" sign --ks \"C:/Users/Admin/.android/debug.keystore\" --ks-key-alias androiddebugkey --ks-pass pass:android --key-pass pass:android --out \"c:/Projects/kiteye-camera-poc/app/build/outputs/apk/release/app-release-signed.apk\" \"c:/Projects/kiteye-camera-poc/app/build/outputs/apk/release/app-release-unsigned.apk\")",
+      "Read(//c/Users/Admin/AppData/Local/Android/Sdk/build-tools/**)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" shell:*)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s 192.168.31.123:5555 shell getprop ro.build.version.release)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s 192.168.31.123:5555 shell getprop ro.product.model)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s 192.168.31.123:5555 shell getprop ro.opengles.version)",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/java.exe\" -jar \"C:/Users/Admin/AppData/Local/Android/Sdk/build-tools/35.0.0/lib/apksigner.jar\" verify --verbose \"c:/Projects/kiteye-camera-poc/app/build/outputs/apk/debug/app-debug.apk\")",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" connect:*)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" mdns:*)",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/keytool.exe\" -genkeypair -v -keystore \"c:/Projects/kiteye-camera-poc/kiteye-release.jks\" -alias kiteye -keyalg RSA -keysize 2048 -validity 3650 -storepass kiteye123 -keypass kiteye123 -dname \"CN=KitEye Camera, OU=KitOptics, O=KitOptics UA, L=UA, ST=UA, C=UA\")",
+      "Bash(\"C:/Program Files/Android/Android Studio/jbr/bin/java.exe\" -jar \"C:/Users/Admin/AppData/Local/Android/Sdk/build-tools/35.0.0/lib/apksigner.jar\" verify --verbose \"c:/Projects/kiteye-camera-poc/app/build/outputs/apk/release/app-release.apk\")",
+      "Bash(powershell -Command \"Get-NetIPAddress -AddressFamily IPv4 | Select-Object IPAddress, InterfaceAlias\")",
+      "Bash(powershell -Command \"Test-NetConnection -ComputerName localhost -Port 8080\")",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" pair:*)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s RFCY20MSK3E install -r \"c:/Projects/kiteye-camera-poc/app/build/outputs/apk/release/app-release.apk\")",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s RFCY20MSK3E shell am start -n \"com.kitoptics.thermalview/com.kitoptics.thermalview.app.MainActivity\")",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s RFCY20MSK3E logcat -s AndroidRuntime:E ThermalGLRenderer:V AusbcBridge:V -T 1)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s RFCY20MSK3E logcat -s AndroidRuntime:E -d)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s RFCY20MSK3E logcat -d)",
+      "Bash(\"C:/Users/Admin/AppData/Local/Android/Sdk/platform-tools/adb.exe\" -s RFCY20MSK3E logcat -s AusbcBridge:V KitEye:D UvcStreamController:V AndroidRuntime:E -T 1)",
+      "Bash(./gradlew testDebugUnitTest assembleRelease)"
     ]
   }
 }
