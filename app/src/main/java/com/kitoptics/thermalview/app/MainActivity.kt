@@ -203,6 +203,13 @@ class MainActivity : AppCompatActivity() {
             // Phase 3: recording — placeholder
             Snackbar.make(binding.root, "Recording: Phase 3", Snackbar.LENGTH_SHORT).show()
         }
+
+        // One-shot calibration: send NUC/FFC trigger, then disable until next connection
+        binding.fabCalibrate.setOnClickListener {
+            ausbcBridge?.calibrate()
+            binding.fabCalibrate.isEnabled = false
+            Snackbar.make(binding.root, "Calibration sent", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun observeState() {
@@ -223,6 +230,7 @@ class MainActivity : AppCompatActivity() {
                 binding.statsBar.text = "FPS: --  USB: disconnected"
                 binding.fabRecord.isEnabled = false
                 binding.fabPalette.isEnabled = false
+                binding.fabCalibrate.isEnabled = false
                 fpsHandler.removeCallbacks(fpsRunnable)
                 closeCamera()
             }
@@ -240,6 +248,7 @@ class MainActivity : AppCompatActivity() {
                 binding.statsBar.text = "FPS: ${"%.1f".format(state.fps)}  USB: connected  ${state.format.label}"
                 binding.fabRecord.isEnabled = true
                 binding.fabPalette.isEnabled = true
+                binding.fabCalibrate.isEnabled = true   // reset one-shot on each new connection
                 fpsHandler.post(fpsRunnable)
             }
             is UsbCameraState.Recording -> {
@@ -254,6 +263,7 @@ class MainActivity : AppCompatActivity() {
                 Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
                 binding.fabRecord.isEnabled = false
                 binding.fabPalette.isEnabled = false
+                binding.fabCalibrate.isEnabled = false
             }
         }
     }

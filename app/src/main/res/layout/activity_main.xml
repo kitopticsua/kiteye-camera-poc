@@ -50,6 +50,17 @@
             app:fabCustomSize="72dp"
             app:backgroundTint="#1E88E5" />
 
+        <!-- Calibrate FAB — one-shot NUC/FFC trigger -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_calibrate"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_margin="6dp"
+            android:contentDescription="Calibrate sensor"
+            android:src="@android:drawable/ic_menu_crop"
+            app:fabCustomSize="72dp"
+            app:backgroundTint="#2D2D2D" />
+
         <!-- White/Black hot toggle FAB -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_palette"

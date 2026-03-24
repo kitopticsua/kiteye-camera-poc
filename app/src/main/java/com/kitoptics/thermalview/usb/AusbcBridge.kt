@@ -161,6 +161,21 @@ class AusbcBridge(
         }
     }
 
+    /**
+     * Sends the sensor calibration (NUC/FFC) trigger to the camera.
+     *
+     * Equivalent to: v4l2-ctl --set-ctrl=focus_automatic_continuous=0
+     * Maps to UVC CT_FOCUS_AUTO_CONTROL = 0 via AUSBC [MultiCameraClient.Camera.setAutoFocus].
+     */
+    fun calibrate() {
+        val cam = camera ?: run {
+            Log.w(TAG, "calibrate: camera not open")
+            return
+        }
+        cam.setAutoFocus(false)
+        Log.i(TAG, "Calibration command sent (CT_FOCUS_AUTO_CONTROL = 0)")
+    }
+
     fun close() {
         camera?.closeCamera()
         camera = null
